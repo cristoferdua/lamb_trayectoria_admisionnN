@@ -1,0 +1,64 @@
+<div class="page">
+  <header class="page__head">
+    <div class="page__icon"><span class="material-symbols-outlined">assignment_ind</span></div>
+    <div class="page__title">
+      <h2>Postulaciones</h2>
+      <p>Admisión · gestión de postulantes del periodo</p>
+    </div>
+    <button class="btn btn--primary" (click)="showForm.set(!showForm())">
+      <span class="material-symbols-outlined">add</span> Nueva postulación
+    </button>
+  </header>
+
+  @if (showForm()) {
+    <div class="upeu-card form-card">
+      <h3>Registrar postulación</h3>
+      <div class="form-grid">
+        <label>ID Persona<input type="number" [(ngModel)]="form.idPersona"></label>
+        <label>ID Programa<input type="number" [(ngModel)]="form.idPrograma"></label>
+        <label>Periodo<input type="text" [(ngModel)]="form.periodo"></label>
+      </div>
+      <div class="form-actions">
+        <button class="btn" (click)="showForm.set(false)">Cancelar</button>
+        <button class="btn btn--primary" (click)="crear()">Guardar</button>
+      </div>
+    </div>
+  }
+
+  @if (error(); as e) { <div class="alert alert--error">{{ e }}</div> }
+
+  <div class="upeu-card table-card">
+    @if (loading()) {
+      <p class="muted">Cargando...</p>
+    } @else if (items().length === 0) {
+      <p class="muted">Sin postulaciones registradas.</p>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Persona</th><th>Programa</th><th>Periodo</th>
+            <th>Puntaje</th><th>Estado</th><th>Fecha</th><th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of items(); track p.id) {
+            <tr>
+              <td>#{{ p.id }}</td>
+              <td>{{ p.idPersona }}</td>
+              <td>{{ p.idPrograma }}</td>
+              <td>{{ p.periodo }}</td>
+              <td>{{ p.puntajeExamen ?? '—' }}</td>
+              <td><span [class]="estadoClass(p.estado)">{{ p.estado }}</span></td>
+              <td>{{ p.fechaRegistro | date:'short' }}</td>
+              <td class="actions">
+                <button class="btn btn--sm" (click)="accion(p, 'evaluar')">Evaluar</button>
+                <button class="btn btn--sm btn--ok" (click)="accion(p, 'admitir')">Admitir</button>
+                <button class="btn btn--sm btn--bad" (click)="accion(p, 'rechazar')">Rechazar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

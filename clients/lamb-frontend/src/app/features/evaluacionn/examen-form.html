@@ -1,0 +1,30 @@
+<h1>{{ id() ? 'Editar examen' : 'Nuevo examen' }}</h1>
+
+<form [formGroup]="form" (ngSubmit)="guardar()">
+  @if (cargando()) {
+    <p>Cargando...</p>
+  }
+
+  <label>
+    Titulo
+    <input type="text" formControlName="titulo" />
+  </label>
+  @if (mensajeValidacion('titulo'); as mensaje) {
+    <p class="error">{{ mensaje }}</p>
+  }
+
+  <label>
+    Curso
+    <input type="text" formControlName="curso" />
+  </label>
+  @if (mensajeValidacion('curso'); as mensaje) {
+    <p class="error">{{ mensaje }}</p>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <button type="submit" [disabled]="cargando()">Guardar</button>
+  <button type="button" (click)="cancelar()">Cancelar</button>
+</form>

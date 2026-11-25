@@ -1,0 +1,94 @@
+<div class="page">
+  <header class="page__head">
+    <h2 class="page__title">Consulta RENIEC</h2>
+  </header>
+
+  <div class="intro-card">
+    <div class="intro-card__icon">
+      <span class="material-symbols-outlined">badge</span>
+    </div>
+    <div class="intro-card__text">
+      <h3>Buscar persona por DNI</h3>
+      <p>Servicio externo que autocompleta los datos del postulante a partir del número de documento.</p>
+    </div>
+  </div>
+
+  <div class="tip">
+    <span class="material-symbols-outlined">verified</span>
+    <div>
+      <strong>Conectado a RENIEC real</strong> vía
+      <a href="https://apis.net.pe" target="_blank">apis.net.pe</a> — los datos devueltos corresponden al titular oficial del DNI.
+    </div>
+  </div>
+
+  <div class="search-card">
+    <div class="field">
+      <label class="field__label">NÚMERO DE DNI *</label>
+      <div class="input input--lg">
+        <span class="material-symbols-outlined input__icon">fingerprint</span>
+        <input type="text" maxlength="8"
+               placeholder="Ej. 76903779"
+               [value]="dni()"
+               (input)="dni.set($any($event.target).value)"
+               (keyup.enter)="buscar()">
+      </div>
+    </div>
+    <div class="search-card__actions">
+      <button class="btn btn--ghost" (click)="limpiar()">Limpiar</button>
+      <button class="btn btn--primary" (click)="buscar()" [disabled]="loading()">
+        @if (loading()) {
+          <span class="material-symbols-outlined spin">progress_activity</span> Consultando...
+        } @else {
+          <span class="material-symbols-outlined">search</span> Buscar en RENIEC
+        }
+      </button>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert--error">
+      <span class="material-symbols-outlined">error</span>
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  @if (result(); as r) {
+    @if (r.encontrado) {
+      <div class="result-card">
+        <header class="result-card__head">
+          <span class="material-symbols-outlined">verified</span>
+          <h3>Persona encontrada</h3>
+          <span class="chip">Fuente: {{ r.fuente }}</span>
+        </header>
+        <div class="result-grid">
+          <div class="field-read">
+            <label>DNI</label>
+            <strong>{{ r.dni }}</strong>
+          </div>
+          <div class="field-read">
+            <label>Nombres</label>
+            <strong>{{ r.nombres }}</strong>
+          </div>
+          <div class="field-read">
+            <label>Apellido paterno</label>
+            <strong>{{ r.apellidoPaterno }}</strong>
+          </div>
+          <div class="field-read">
+            <label>Apellido materno</label>
+            <strong>{{ r.apellidoMaterno }}</strong>
+          </div>
+          <div class="field-read field-read--full">
+            <label>Nombre completo</label>
+            <strong class="big">{{ r.nombreCompleto }}</strong>
+          </div>
+        </div>
+        <footer class="result-card__foot">
+          <button class="btn btn--primary">
+            <span class="material-symbols-outlined">person_add</span>
+            Usar estos datos para crear postulante
+          </button>
+        </footer>
+      </div>
+    }
+  }
+</div>

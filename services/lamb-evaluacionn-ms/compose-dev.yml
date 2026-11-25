@@ -1,0 +1,19 @@
+name: lamb-evaluacionn-dev
+
+services:
+  postgres-evaluacionn-dev:
+    image: postgres:16-alpine
+    container_name: lamb-postgres-evaluacionn-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lamb_evaluacionn_db
+      POSTGRES_USER: lamb
+      POSTGRES_PASSWORD: lamb
+    ports:
+      - "15460:5432"
+    volumes:
+      - lamb_evaluacionn_dev_data:/var/lib/postgresql/data
+
+volumes:
+  lamb_evaluacionn_dev_data:
+    name: lamb-evaluacionn-data

@@ -1,0 +1,270 @@
+<div class="page">
+  <header class="page__head">
+    <h2 class="page__title">Nueva Postulación</h2>
+  </header>
+
+  <!-- Stepper -->
+  <div class="stepper">
+    <div class="step" [class.step--active]="paso() === 1" [class.step--done]="paso() > 1">
+      <div class="step__num">1</div>
+      <div class="step__label">Identificación</div>
+    </div>
+    <div class="step__line" [class.step__line--done]="paso() > 1"></div>
+    <div class="step" [class.step--active]="paso() === 2" [class.step--done]="paso() > 2">
+      <div class="step__num">2</div>
+      <div class="step__label">Selección académica</div>
+    </div>
+    <div class="step__line" [class.step__line--done]="paso() > 2"></div>
+    <div class="step" [class.step--active]="paso() === 3" [class.step--done]="paso() > 3">
+      <div class="step__num">3</div>
+      <div class="step__label">Contacto</div>
+    </div>
+    <div class="step__line" [class.step__line--done]="paso() > 3"></div>
+    <div class="step" [class.step--active]="paso() === 4" [class.step--done]="paso() === 4">
+      <div class="step__num"><span class="material-symbols-outlined">check</span></div>
+      <div class="step__label">Confirmación</div>
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert--error">
+      <span class="material-symbols-outlined">error</span>
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <!-- Paso 1 — DNI + RENIEC -->
+  @if (paso() === 1) {
+    <div class="card">
+      <header class="card__head">
+        <span class="material-symbols-outlined">badge</span>
+        <h3>Paso 1 — Identificar al postulante</h3>
+      </header>
+      <div class="card__body">
+        <p class="hint">Ingrese el DNI del postulante. El sistema consultará RENIEC para autocompletar los datos oficiales.</p>
+        <div class="field">
+          <label class="field__label">DNI *</label>
+          <div class="reniec-row">
+            <div class="input input--lg">
+              <span class="material-symbols-outlined input__icon">fingerprint</span>
+              <input type="text" maxlength="8" placeholder="8 dígitos"
+                     [value]="dni()"
+                     (input)="dni.set($any($event.target).value)"
+                     (keyup.enter)="buscarDni()">
+            </div>
+            <button class="btn btn--primary" (click)="buscarDni()" [disabled]="loading()">
+              @if (loading()) {
+                <span class="material-symbols-outlined spin">progress_activity</span> Consultando
+              } @else {
+                <span class="material-symbols-outlined">search</span> Buscar RENIEC
+              }
+            </button>
+          </div>
+        </div>
+
+        @if (reniec(); as r) {
+          @if (r.encontrado) {
+            <div class="reniec-ok">
+              <div class="reniec-ok__head">
+                <span class="material-symbols-outlined">verified</span>
+                <strong>Datos oficiales RENIEC</strong>
+                <span class="chip">fuente: {{ r.fuente }}</span>
+              </div>
+              <div class="reniec-ok__grid">
+                <div><label>DNI</label><strong>{{ r.dni }}</strong></div>
+                <div><label>Nombres</label><strong>{{ r.nombres }}</strong></div>
+                <div><label>Apellido paterno</label><strong>{{ r.apellidoPaterno }}</strong></div>
+                <div><label>Apellido materno</label><strong>{{ r.apellidoMaterno }}</strong></div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+      <footer class="card__foot">
+        <div></div>
+        <button class="btn btn--primary" (click)="avanzar()" [disabled]="!puedePaso2()">
+          Continuar <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </footer>
+    </div>
+  }
+
+  <!-- Paso 2 — Selección académica -->
+  @if (paso() === 2) {
+    <div class="card">
+      <header class="card__head">
+        <span class="material-symbols-outlined">school</span>
+        <h3>Paso 2 — Elegir convocatoria y programa</h3>
+      </header>
+      <div class="card__body">
+        <div class="grid-2">
+          <div class="field">
+            <label class="field__label">Sede / Filial *</label>
+            <div class="input">
+              <span class="material-symbols-outlined input__icon">location_on</span>
+              <select [value]="idSede() ?? ''"
+                      (change)="idSede.set(+$any($event.target).value || null); idPrograma.set(null)">
+                <option value="">— Elige la sede —</option>
+                @for (s of sedes(); track s.id) {
+                  <option [value]="s.id">{{ s.nombre }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label">Convocatoria *</label>
+            <div class="input">
+              <span class="material-symbols-outlined input__icon">campaign</span>
+              <select [value]="idConvocatoria() ?? ''"
+                      (change)="idConvocatoria.set(+$any($event.target).value || null)">
+                <option value="">— Elige la convocatoria —</option>
+                @for (c of convocatorias(); track c.id) {
+                  <option [value]="c.id">{{ c.nombre }} · {{ c.periodo }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label">Modalidad de ingreso *</label>
+            <div class="input">
+              <span class="material-symbols-outlined input__icon">list</span>
+              <select [value]="idModalidad() ?? ''"
+                      (change)="idModalidad.set(+$any($event.target).value || null)">
+                <option value="">— Elige la modalidad —</option>
+                @for (m of modalidades(); track m.id) {
+                  <option [value]="m.id">{{ m.nombre }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field__label">Carrera *</label>
+            <div class="input">
+              <span class="material-symbols-outlined input__icon">menu_book</span>
+              <select [value]="idPrograma() ?? ''" [disabled]="!idSede()"
+                      (change)="idPrograma.set(+$any($event.target).value || null)">
+                <option value="">
+                  {{ idSede() ? '— Elige la carrera —' : 'Primero elige la sede' }}
+                </option>
+                @for (p of programasFiltrados(); track p.id) {
+                  <option [value]="p.id">{{ p.nombre }} ({{ p.facultad }})</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="card__foot">
+        <button class="btn btn--ghost" (click)="volver()">
+          <span class="material-symbols-outlined">arrow_back</span> Volver
+        </button>
+        <button class="btn btn--primary" (click)="avanzar()" [disabled]="!puedePaso3()">
+          Continuar <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </footer>
+    </div>
+  }
+
+  <!-- Paso 3 — Contacto -->
+  @if (paso() === 3) {
+    <div class="card">
+      <header class="card__head">
+        <span class="material-symbols-outlined">contact_mail</span>
+        <h3>Paso 3 — Datos de contacto</h3>
+      </header>
+      <div class="card__body">
+        <p class="hint">Solo necesitamos como contactarte. El resto (documentos, pago del derecho de admision)
+          lo coordinaras en la oficina de admision. Recibiras un correo con tu codigo.</p>
+        <div class="grid-2">
+          <div class="field">
+            <label class="field__label">Telefono / celular *</label>
+            <div class="input">
+              <span class="material-symbols-outlined input__icon">call</span>
+              <input type="text" placeholder="999 999 999"
+                     [value]="telefono()" (input)="telefono.set($any($event.target).value)">
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label">Correo electronico *</label>
+            <div class="input">
+              <span class="material-symbols-outlined input__icon">mail</span>
+              <input type="email" placeholder="postulante@gmail.com"
+                     [value]="correo()" (input)="correo.set($any($event.target).value)">
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="card__foot">
+        <button class="btn btn--ghost" (click)="volver()">
+          <span class="material-symbols-outlined">arrow_back</span> Volver
+        </button>
+        <button class="btn btn--primary" (click)="registrar()" [disabled]="loading()">
+          @if (loading()) {
+            <span class="material-symbols-outlined spin">progress_activity</span> Registrando...
+          } @else {
+            <span class="material-symbols-outlined">check</span> Registrar postulación
+          }
+        </button>
+      </footer>
+    </div>
+  }
+
+  <!-- Paso 4 — Confirmación -->
+  @if (paso() === 4 && resultado(); as res) {
+    <div class="success">
+      <div class="success__circle">
+        <span class="material-symbols-outlined">check_circle</span>
+      </div>
+      <h3>¡Postulación registrada!</h3>
+      <p class="success__msg">{{ res.mensajeConfirmacion }}</p>
+
+      <div class="success__grid">
+        <div><label>Código postulante</label><strong class="big">{{ res.codigoPostulante }}</strong></div>
+        <div><label>Nombre</label><strong>{{ res.nombreCompleto }}</strong></div>
+        <div><label>Periodo</label><strong>{{ res.periodo }}</strong></div>
+        <div><label>Estado</label><strong>{{ res.estado }}</strong></div>
+      </div>
+
+      <div class="success__note">
+        <span class="material-symbols-outlined">bolt</span>
+        <div>
+          Se publicó el evento <code>postulante.creado</code> en el topic Kafka <code>admision-eventos</code>.
+          Trayectoria Académica, Finanzas del Estudiante y LMS reciben esta notificación.
+        </div>
+      </div>
+
+      @if (res.correoProgramado) {
+        <div class="success__note success__note--mail">
+          <span class="material-symbols-outlined">mail</span>
+          <div>
+            Correo de bienvenida enviado a <strong>{{ res.correoDestino }}</strong> vía Resend.
+            Incluye el código <code>{{ res.codigoPostulante }}</code> y los próximos pasos del proceso.
+          </div>
+        </div>
+      }
+
+      <div class="success__qr">
+        <img [src]="carnetUrl()" alt="QR del carnet" width="180" height="180">
+        <div class="success__qr-text">
+          <strong>Carnet del postulante</strong>
+          <p>El QR contiene el código <code>{{ res.codigoPostulante }}</code> para identificarte el día del examen. Descarga tu carnet oficial con todos los datos:</p>
+          <button class="btn btn--sm" (click)="descargarCarnet()">
+            <span class="material-symbols-outlined">picture_as_pdf</span> Descargar carnet PDF
+          </button>
+        </div>
+      </div>
+
+      <div class="success__actions">
+        <button class="btn btn--ghost" (click)="irAListado()">
+          <span class="material-symbols-outlined">search</span> Consultar mi postulacion
+        </button>
+        <button class="btn btn--primary" (click)="nuevo()">
+          <span class="material-symbols-outlined">add</span> Nueva postulación
+        </button>
+      </div>
+    </div>
+  }
+</div>

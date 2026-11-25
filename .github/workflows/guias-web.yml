@@ -1,0 +1,44 @@
+# Publica la carpeta guias-web/ en GitHub Pages cada vez que cambia en main.
+# Requisito (una sola vez): repo en GitHub -> Settings -> Pages -> Source: "GitHub Actions".
+# Para publicar sin cambiar nada: Actions -> "Publicar guías" -> Run workflow.
+name: Publicar guías
+
+on:
+  push:
+    branches: [main]
+    paths: ["guias-web/**", ".github/workflows/guias-web.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install mkdocs-material
+      - run: mkdocs build --strict
+        working-directory: guias-web
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: guias-web/site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

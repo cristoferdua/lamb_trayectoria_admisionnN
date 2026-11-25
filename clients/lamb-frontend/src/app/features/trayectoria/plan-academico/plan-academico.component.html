@@ -1,0 +1,47 @@
+<div class="plan">
+  <header class="plan__head">
+    <div class="icon-chip"><span class="material-symbols-outlined">menu_book</span></div>
+    <div class="plan__title">
+      <h2>Plan Académico</h2>
+      <p>Plan de Estudios · {{ carrera() }}</p>
+    </div>
+    <select class="plan-select">
+      <option>{{ carrera() }}</option>
+    </select>
+  </header>
+
+  <div class="ciclos">
+    @for (c of ciclos(); track c.num) {
+      <section class="ciclo">
+        <header class="ciclo__head">
+          <div class="ciclo__badge">{{ c.num }}</div>
+          <h3>CICLO {{ c.num }}</h3>
+          <span class="ciclo__count">{{ c.cursos.length }} cursos</span>
+        </header>
+        <table class="ciclo__table">
+          <thead>
+            <tr>
+              <th>NOMBRE</th><th>CR</th><th>HT</th><th>HP</th><th>TH</th><th>NOTA</th><th>ACCIONES</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (cu of c.cursos; track cu.nombre) {
+              <tr>
+                <td>{{ cu.nombre }}</td>
+                <td>{{ cu.cr }}</td>
+                <td>{{ cu.ht }}</td>
+                <td>{{ cu.hp }}</td>
+                <td>{{ cu.th }}</td>
+                <td><span [class]="notaClass(cu.nota)">{{ cu.nota ?? '—' }}</span></td>
+                <td class="actions">
+                  <button class="act act--view" title="ver"><span class="material-symbols-outlined">visibility</span></button>
+                  <button class="act act--dl" title="descargar"><span class="material-symbols-outlined">description</span></button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    }
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<h1>Examenes</h1>
+
+@if (cargando()) {
+  <p>Cargando examenes...</p>
+} @else if (error()) {
+  <p>{{ error() }}</p>
+} @else {
+  <a routerLink="/evaluacionn/examenes/nuevo">Nuevo examen</a>
+
+  @if (errorAccion()) {
+    <p class="error">{{ errorAccion() }}</p>
+  }
+
+  <table>
+    <thead>
+      <tr><th>Titulo</th><th>Curso</th><th></th></tr>
+    </thead>
+    <tbody>
+      @for (examen of examenes(); track examen.id) {
+        <tr>
+          <td>{{ examen.titulo }}</td>
+          <td>{{ examen.curso }}</td>
+          <td>
+            <a [routerLink]="['/evaluacionn/examenes', examen.id, 'editar']">Editar</a>
+            <button (click)="eliminar(examen.id!)">Eliminar</button>
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="3">No hay examenes registrados.</td></tr>
+      }
+    </tbody>
+  </table>
+}

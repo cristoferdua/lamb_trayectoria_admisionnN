@@ -1,0 +1,64 @@
+@use '@angular/material' as mat;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --upeu-navy: #1A2456;
+  --upeu-navy-dark: #141B44;
+  --upeu-gold: #F5B800;
+  --upeu-gold-light: #FFC107;
+  --upeu-bg: #F5F6FA;
+  --upeu-ink: #1A2456;
+  --upeu-muted: #6B7280;
+  --upeu-border: #E5E7EB;
+  --upeu-ok: #10B981;
+  --upeu-bad: #EF4444;
+}
+
+html {
+  height: 100%;
+  @include mat.theme((
+    color: (primary: mat.$azure-palette, tertiary: mat.$yellow-palette),
+    typography: Inter,
+    density: 0,
+  ));
+}
+
+body {
+  color-scheme: light;
+  background-color: var(--upeu-bg);
+  color: var(--upeu-ink);
+  font-family: Inter, system-ui, sans-serif;
+  margin: 0;
+  height: 100%;
+}
+
+* { box-sizing: border-box; }
+
+.upeu-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  padding: 20px;
+}
+
+.upeu-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--upeu-navy);
+}
+
+.upeu-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--upeu-gold);
+  color: var(--upeu-navy);
+  font-weight: 700;
+  font-size: 12px;
+  padding: 0 7px;
+}

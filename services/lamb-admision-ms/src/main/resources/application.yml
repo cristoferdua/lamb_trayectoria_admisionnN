@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: lamb-admision-ms
+  profiles:
+    active: dev
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URL:http://localhost:28888}"
+
+# Servicios externos
+lamb:
+  reniec:
+    base-url: https://api.apis.net.pe
+    token: ${LAMB_RENIEC_TOKEN:}
+  brevo:
+    base-url: https://api.brevo.com
+    key: ${LAMB_BREVO_KEY:}
+    from-email: ${LAMB_BREVO_FROM:cristion22gfg@gmail.com}
+    from-name: ${LAMB_BREVO_FROM_NAME:Admisión UPeU}
+  # URL pública del backend (ngrok/producción). Si vacía, el QR usa la request HTTP (localhost).
+  public-base-url: ${LAMB_PUBLIC_BASE_URL:}

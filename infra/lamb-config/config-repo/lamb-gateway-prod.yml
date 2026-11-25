@@ -1,0 +1,89 @@
+server:
+  port: 8080
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://lamb-keycloak:8080/realms/lamb
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: lamb-personas
+              uri: lb://lamb-personas-ms
+              predicates:
+                - Path=/api/v1/personas/**
+            - id: lamb-institucional-facultades
+              uri: lb://lamb-institucional-ms
+              predicates:
+                - Path=/api/v1/facultades/**
+            - id: lamb-institucional-programas
+              uri: lb://lamb-institucional-ms
+              predicates:
+                - Path=/api/v1/programas/**
+            - id: lamb-planificacion-cursos
+              uri: lb://lamb-planificacion-ms
+              predicates:
+                - Path=/api/v1/cursos/**
+            # 34 CRUD de planificacion (grupos, horarios, docentes, periodos, ambientes, solicitudes...) + vistas
+            - id: lamb-planificacion
+              uri: lb://lamb-planificacion-ms
+              predicates:
+                - Path=/api/v1/ambientes/**,/api/v1/asignaciones-docente/**,/api/v1/aulas-virtuales/**,/api/v1/calendarios-academicos/**,/api/v1/cargas-lectivas/**,/api/v1/cargas-no-lectivas/**,/api/v1/cronogramas-sesion/**,/api/v1/cupos-grupo/**,/api/v1/cupos-taller/**,/api/v1/cursos-nivelacion/**,/api/v1/dias-no-lectivos/**,/api/v1/disponibilidades-docente/**,/api/v1/equipamientos-ambiente/**,/api/v1/equivalencias-curso/**,/api/v1/grupos/**,/api/v1/grupos-habilitados-equivalencia/**,/api/v1/grupos-taller/**,/api/v1/hitos-calendario/**,/api/v1/horarios-grupo/**,/api/v1/limites-creditos/**,/api/v1/ofertas-academicas/**,/api/v1/pabellones/**,/api/v1/parametros-matricula/**,/api/v1/periodos-academicos/**,/api/v1/preferencias-curso-docente/**,/api/v1/sesiones-clase/**,/api/v1/silabos-grupo/**,/api/v1/solicitudes-apertura-grupo/**,/api/v1/solicitudes-cambio-aula/**,/api/v1/solicitudes-cambio-docente/**,/api/v1/solicitudes-cambio-horario/**,/api/v1/solicitudes-cierre-fusion/**,/api/v1/solicitudes-grupo-equivalente/**,/api/v1/tipos-ambiente/**,/api/v1/tipos-periodo/**,/api/v1/vistas/horario-estudiante
+            - id: lamb-admision
+              uri: lb://lamb-admision-ms
+              predicates:
+                - Path=/api/v1/postulaciones/**
+            - id: lamb-curriculo
+              uri: lb://lamb-curriculo-ms
+              predicates:
+                - Path=/api/v1/planes-estudio/**
+            # 46 CRUD de curriculo (el CRUD 5, plan de estudios, es la ruta de arriba)
+            - id: lamb-curriculo-cruds
+              uri: lb://lamb-curriculo-ms
+              predicates:
+                - Path=/api/v1/actividades-formacion/**,/api/v1/areas-curriculares/**,/api/v1/ciclos-plan/**,/api/v1/comisiones-curriculares/**,/api/v1/competencias-especificas/**,/api/v1/competencias-generales/**,/api/v1/creditos-ciclo/**,/api/v1/cursos-catalogo/**,/api/v1/cursos-externos-convalidables/**,/api/v1/cursos-investigacion/**,/api/v1/denominaciones-programa/**,/api/v1/departamentos-academicos/**,/api/v1/distribuciones-horas/**,/api/v1/ejes-curriculares/**,/api/v1/equivalencias-plan/**,/api/v1/evaluaciones-curriculares/**,/api/v1/grados-academicos/**,/api/v1/grupos-electivos/**,/api/v1/lineas-investigacion/**,/api/v1/mallas-curriculares/**,/api/v1/menciones/**,/api/v1/miembros-comision/**,/api/v1/modalidades/**,/api/v1/modalidades-titulacion/**,/api/v1/perfiles-egreso/**,/api/v1/perfiles-ingreso/**,/api/v1/planes-adecuacion/**,/api/v1/proyecciones-sociales/**,/api/v1/requisitos-egreso/**,/api/v1/requisitos-extracurriculares/**,/api/v1/requisitos-idioma/**,/api/v1/requisitos-investigacion/**,/api/v1/requisitos-matricula/**,/api/v1/requisitos-practicas/**,/api/v1/resoluciones-plan/**,/api/v1/resultados-aprendizaje/**,/api/v1/silabos-base/**,/api/v1/solicitudes-modificacion-curricular/**,/api/v1/sumillas-curso/**,/api/v1/tablas-convalidacion/**,/api/v1/tipos-curso/**,/api/v1/titulos-profesionales/**,/api/v1/unidades-aprendizaje/**,/api/v1/universidades-origen/**,/api/v1/vigencias-cohorte/**,/api/v1/voluntariados/**
+            - id: lamb-matricula
+              uri: lb://lamb-matricula-ms
+              predicates:
+                - Path=/api/v1/matriculas/**
+            - id: lamb-evaluacion
+              uri: lb://lamb-evaluacion-ms
+              predicates:
+                - Path=/api/v1/notas/**
+            - id: lamb-evaluacion-actas
+              uri: lb://lamb-evaluacion-ms
+              predicates:
+                - Path=/api/v1/actas/**
+            # CRUD de evaluacion (nota y acta son las rutas de arriba) + vistas calculadas
+            - id: lamb-evaluacion-cruds
+              uri: lb://lamb-evaluacion-ms
+              predicates:
+                - Path=/api/v1/actas-complementarias/**,/api/v1/actas-rectificacion/**,/api/v1/calificaciones-criterio/**,/api/v1/componentes-evaluacion/**,/api/v1/configuraciones-evaluacion/**,/api/v1/criterios-rubrica/**,/api/v1/encuestas-docente/**,/api/v1/escalas-calificacion/**,/api/v1/evaluaciones-programadas/**,/api/v1/firmas-acta/**,/api/v1/inhabilitaciones-inasistencia/**,/api/v1/justificaciones-inasistencia/**,/api/v1/plazos-apertura/**,/api/v1/preguntas-encuesta/**,/api/v1/registros-asistencia/**,/api/v1/respuestas-encuesta/**,/api/v1/respuestas-solicitud-apertura/**,/api/v1/rubricas/**,/api/v1/solicitudes-apertura-notas/**,/api/v1/vistas/acta-notas/**,/api/v1/vistas/historial-acta/**,/api/v1/vistas/nota-final/**,/api/v1/vistas/estadistica-grupo/**,/api/v1/vistas/cuadro-meritos/**,/api/v1/vistas/resultado-evaluacion-docente/**
+            - id: lamb-trayectoria
+              uri: lb://lamb-trayectoria-ms
+              predicates:
+                - Path=/api/v1/trayectorias/**,/api/v1/alertas-riesgo/**,/api/v1/cambios-academicos/**,/api/v1/casos-seguimiento/**,/api/v1/controles-repitencia/**,/api/v1/cumplimientos-requisito/**,/api/v1/egresos/**,/api/v1/informes-trayectoria/**,/api/v1/niveles-riesgo/**,/api/v1/planes-refuerzo/**,/api/v1/programas-tutoria/**,/api/v1/reconocimientos/**,/api/v1/reglas-alerta/**,/api/v1/sesiones-tutoria/**,/api/v1/situaciones-cierre/**,/api/v1/solicitudes-constancia/**,/api/v1/tutorias/**,/api/v1/vistas/avance-curricular,/api/v1/vistas/historial-academico,/api/v1/vistas/promedio-ponderado,/api/v1/vistas/rendimiento-por-curso,/api/v1/vistas/historial-estados
+            - id: lamb-finanzas
+              uri: lb://lamb-finanzas-ms
+              predicates:
+                - Path=/api/v1/pagos/**
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.value}
+  client:
+    service-url:
+      defaultZone: http://lamb-eureka:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: never

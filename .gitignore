@@ -1,0 +1,39 @@
+# Environment files with real credentials - never commit
+.env
+!.env.example
+
+# Runtime artifacts - never commit
+hs_err_pid*.log
+replay_pid*.log
+restart-*.log
+*-20[0-9][0-9]-[0-9][0-9]-[0-9][0-9].log
+
+# Logs
+*.log
+logs/
+services/**/logs/
+infra/**/logs/
+keycloak/logs/
+scripts/run/
+
+# Build outputs
+target/
+build/
+dist/
+out/
+
+# Node
+node_modules/
+.angular/
+.cache/
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Working notes locales
+.claude/
+CONTINUAR.md
